@@ -198,7 +198,7 @@ def iothub_client_sample_run():
             if MESSAGE_SWITCH:
                 # send a few messages every minute
                 print ( "IoTHubClient sending %d messages" % MESSAGE_COUNT )
-                timestamp = datetime.now
+                timestamp = datetime.datetime.utcfromtimestamp(time.mktime(datetime.datetime.now().timetuple())).strftime('%Y-%m-%d %H:%M:%S')
                 temperature = sensor.read_temperature()
                 humidity = sensor.read_humidity()
                 air_pressure = sensor.read_pressure()
