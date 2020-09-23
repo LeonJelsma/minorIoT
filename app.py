@@ -3,7 +3,7 @@
 # Copyright (c) Microsoft. All rights reserved.
 # Licensed under the MIT license. See LICENSE file in the project root for
 # full license information.
-
+import datetime
 import random
 import time
 import sys
@@ -69,7 +69,7 @@ if not is_correct_connection_string():
     telemetry.send_telemetry_data(None, EVENT_FAILED, "Device connection string is not correct. Please check your connection string in config.py")
     sys.exit(0)
 
-MSG_TXT = "{\"deviceId\": \"" + config.DEVICE_ID + "\",\"temperature\": %f,\"humidity\": %f,\"air_pressure\": %f}"
+MSG_TXT = "{\"deviceId\": \"" + config.DEVICE_ID + "\",\"timestamp\": %s,\"temperature\": %f,\"humidity\": %f,\"air_pressure\": %f}"
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(config.GPIO_PIN_ADDRESS, GPIO.OUT)
@@ -198,10 +198,12 @@ def iothub_client_sample_run():
             if MESSAGE_SWITCH:
                 # send a few messages every minute
                 print ( "IoTHubClient sending %d messages" % MESSAGE_COUNT )
+                timestamp = datetime.datetime.utcfromtimestamp(time.mktime(datetime.datetime.now().timetuple())).strftime('%Y-%m-%d %H:%M:%S')
                 temperature = sensor.read_temperature()
                 humidity = sensor.read_humidity()
                 air_pressure = sensor.read_pressure()
                 msg_txt_formatted = MSG_TXT % (
+                    timestamp,
                     temperature,
                     humidity,
                     air_pressure)
